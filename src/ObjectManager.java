@@ -17,7 +17,7 @@ public class ObjectManager {
 		for (int i=0;i<xs.size();i++) {
 			xs.get(i).draw(g);
 		}
-		for (int i=0;i<xs.size();i++) {
+		for (int i=0;i<os.size();i++) {
 			os.get(i).draw(g);
 		}
 	}

@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Graphics;
 
 public class X {
@@ -12,6 +13,7 @@ public class X {
 		this.height = height;
 	}
 	public void draw(Graphics g) {
+		g.setColor(Color.BLACK);
 		g.drawLine(x, y, x+width, y+height);
 		g.drawLine(x+width, y, x, y+height);
 	}

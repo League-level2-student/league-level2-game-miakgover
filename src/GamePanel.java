@@ -11,8 +11,12 @@ public class GamePanel extends JPanel implements KeyListener{
 	final int GAME = 1;
 	final int END = 2;
 	int currentState = MENU;
+	int currentPlayer = 1;
 	Font titleFont;
 	Font instructionFont;
+	SelectedSquare selected_square = new SelectedSquare(100,100,100,100);
+	ObjectManager object_manager = new ObjectManager();
+	Boolean[] squares = {false, false, false, false, false, false, false, false, false};
 	GamePanel(){
 		titleFont = new Font("Arial", Font.BOLD, 45);
 		instructionFont = new Font("Arial", Font.PLAIN, 28);
@@ -48,6 +52,8 @@ public class GamePanel extends JPanel implements KeyListener{
 		g.drawLine(300, 100, 300, 400);
 		g.drawLine(100, 200, 400, 200);
 		g.drawLine(100, 300, 400, 300);
+		selected_square.draw(g);
+		object_manager.draw(g);
 	}
 	public void drawEndState(Graphics g) {
 		
@@ -59,7 +65,72 @@ public class GamePanel extends JPanel implements KeyListener{
 			currentState++;
 			repaint();
 		}
-		
+		else if(e.getKeyCode() == KeyEvent.VK_UP) {
+			selected_square.up();
+			repaint();
+		}
+		else if(e.getKeyCode() == KeyEvent.VK_DOWN) {
+			selected_square.down();
+			repaint();
+		}
+		else if(e.getKeyCode() == KeyEvent.VK_LEFT) {
+			selected_square.left();
+			repaint();
+		}
+		else if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			selected_square.right();
+			repaint();
+		}
+		else if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+			if (currentPlayer == 1) {
+				X x = new X(selected_square.x, selected_square.y, selected_square.width, selected_square.height);
+				if (squares[selected_square.current_square] == false) {
+					object_manager.addX(x);
+					squares[selected_square.current_square] = true;
+					currentPlayer = 2;
+				}
+			}
+			else if(currentPlayer == 2) {
+				O o = new O(selected_square.x, selected_square.y, selected_square.width, selected_square.height);
+				object_manager.addO(o);
+				squares[selected_square.current_square] = true;
+				currentPlayer = 1;
+			}
+			repaint();
+		}
+		if (selected_square.y == 100) {
+			if (selected_square.x == 100) {
+				selected_square.current_square = 0;
+			}
+			else if (selected_square.x == 200) {
+				selected_square.current_square = 1;
+			}
+			else if (selected_square.x == 300) {
+				selected_square.current_square = 2;
+			}
+		}
+		else if (selected_square.y == 200) {
+			if (selected_square.x == 100) {
+				selected_square.current_square = 3;
+			}
+			else if (selected_square.x == 200) {
+				selected_square.current_square = 4;
+			}
+			else if (selected_square.x == 300) {
+				selected_square.current_square = 5;
+			}
+		}
+		else if (selected_square.y == 300) {
+			if (selected_square.x == 100) {
+				selected_square.current_square = 6;
+			}
+			else if (selected_square.x == 200) {
+				selected_square.current_square = 7;
+			}
+			else if (selected_square.x == 300) {
+				selected_square.current_square = 8;
+			}
+		}
 	}
 	@Override
 	public void keyReleased(KeyEvent arg0) {
