@@ -16,7 +16,9 @@ public class GamePanel extends JPanel implements KeyListener{
 	Font instructionFont;
 	SelectedSquare selected_square = new SelectedSquare(100,100,100,100);
 	ObjectManager object_manager = new ObjectManager();
-	Boolean[] squares = {false, false, false, false, false, false, false, false, false};
+	String[] squares = {"empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty"};
+	Winner checkWinner = new Winner();
+	String winner = "no winner";
 	GamePanel(){
 		titleFont = new Font("Arial", Font.BOLD, 45);
 		instructionFont = new Font("Arial", Font.PLAIN, 28);
@@ -43,6 +45,8 @@ public class GamePanel extends JPanel implements KeyListener{
 		g.drawString("Use arrows to select a square", 40, 200);
 		g.drawString("Press enter to pick a square", 50, 250);
 		g.drawString("Press space to start", 90, 300);
+		g.drawString("The first player to move is x and", 15, 350);
+		g.drawString("the second is o", 120, 400);
 	}
 	public void drawGameState(Graphics g) {
 		g.setColor(Color.WHITE);
@@ -56,7 +60,12 @@ public class GamePanel extends JPanel implements KeyListener{
 		object_manager.draw(g);
 	}
 	public void drawEndState(Graphics g) {
-		
+		g.setColor(Color.WHITE);
+		g.fillRect(0, 0, TicTacToe.WIDTH, TicTacToe.HEIGHT);
+		g.setColor(Color.BLACK);
+		g.setFont(instructionFont);
+		g.drawString(winner, 100, 150);
+		g.drawString("has won!", 270, 150);
 	}
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -82,21 +91,32 @@ public class GamePanel extends JPanel implements KeyListener{
 			repaint();
 		}
 		else if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+			System.out.println(squares[selected_square.current_square]);
 			if (currentPlayer == 1) {
 				X x = new X(selected_square.x, selected_square.y, selected_square.width, selected_square.height);
-				if (squares[selected_square.current_square] == false) {
+				if (squares[selected_square.current_square] == "empty") {
 					object_manager.addX(x);
-					squares[selected_square.current_square] = true;
+					squares[selected_square.current_square] = "x";
 					currentPlayer = 2;
 				}
 			}
 			else if(currentPlayer == 2) {
 				O o = new O(selected_square.x, selected_square.y, selected_square.width, selected_square.height);
-				object_manager.addO(o);
-				squares[selected_square.current_square] = true;
-				currentPlayer = 1;
+				if (squares[selected_square.current_square] == "empty") {
+					object_manager.addO(o);
+					squares[selected_square.current_square] = "o";
+					currentPlayer = 1;
+				}
 			}
 			repaint();
+			if (checkWinner.checkWinner(squares) == "Player One") {
+				currentState = END;
+				winner = "Player One";
+			}
+			else if (checkWinner.checkWinner(squares) == "Player Two") {
+				currentState = END;
+				winner = "Player Two";
+			}
 		}
 		if (selected_square.y == 100) {
 			if (selected_square.x == 100) {
